@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>

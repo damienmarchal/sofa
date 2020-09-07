@@ -38,6 +38,8 @@ using sofa::core::visual::VisualParams;
 #include <SofaGeneralEngine/ClusteringEngine.h>
 using sofa::component::engine::ClusteringEngine ;
 
+#include <sofa/core/topology/TopologyChange.h>
+
 using sofa::helper::vector;
 
 namespace sofa

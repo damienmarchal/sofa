@@ -27,7 +27,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 #include <SofaTest/TestMessageHandler.h>
 
 

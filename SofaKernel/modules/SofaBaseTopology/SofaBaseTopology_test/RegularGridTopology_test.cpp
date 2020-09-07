@@ -2,7 +2,7 @@
 using sofa::Sofa_test;
 
 #include <SofaBaseTopology/RegularGridTopology.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 using sofa::core::objectmodel::New;
 using sofa::defaulttype::Vector3;
 using namespace sofa::component::topology;

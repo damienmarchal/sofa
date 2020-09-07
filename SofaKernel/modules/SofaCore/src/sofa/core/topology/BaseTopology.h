@@ -58,6 +58,7 @@ class TopologicalMapping;
 /// Allow topological handle events
 class TopologyEngine;
 
+class PointAncestorElem;
 
 /** A class that contains a set of high-level (user frisendly) methods that perform topological changes */
 class SOFA_CORE_API TopologyAlgorithms : public sofa::core::topology::BaseTopologyObject

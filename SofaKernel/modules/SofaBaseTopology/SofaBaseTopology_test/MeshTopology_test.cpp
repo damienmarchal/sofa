@@ -29,7 +29,7 @@
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/helper/system/FileRepository.h>
 

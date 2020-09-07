@@ -23,6 +23,7 @@
 #include <SofaConstraint/LMConstraintDirectSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaConstraint/ContactDescription.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/QR>
 #include <Eigen/SVD>

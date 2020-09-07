@@ -23,6 +23,7 @@
 #include <sofa/helper/testing/BaseTest.h>
 #include <SofaBaseTopology/SofaBaseTopology_test/fake_TopologyScene.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/helper/system/FileRepository.h>
 
 

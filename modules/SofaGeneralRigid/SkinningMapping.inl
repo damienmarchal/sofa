@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/io/Mesh.h>
 #include <limits>

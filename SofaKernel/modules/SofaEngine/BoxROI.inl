@@ -25,6 +25,7 @@
 #include <SofaEngine/BoxROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

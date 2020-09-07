@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <algorithm>
 #include <functional>
 #include <iostream>

@@ -28,6 +28,7 @@
 #include <iostream>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 namespace sofa
 {

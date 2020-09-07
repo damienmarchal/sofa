@@ -21,6 +21,8 @@
 ******************************************************************************/
 
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

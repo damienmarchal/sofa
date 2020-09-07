@@ -31,6 +31,7 @@
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <iostream>
 #include <cstring>
 

@@ -26,6 +26,7 @@
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/types/RGBAColor.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <fstream>
 
 #include <sofa/helper/logging/Messaging.h>

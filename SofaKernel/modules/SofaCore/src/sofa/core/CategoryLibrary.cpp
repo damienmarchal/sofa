@@ -48,6 +48,7 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/loader/BaseLoader.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 namespace sofa
 {

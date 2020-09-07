@@ -24,6 +24,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaGeneralEngine/ShapeMatching.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/helper/decompose.h>
 #include <iostream>
 #include <sofa/helper/IndexOpenMP.h>

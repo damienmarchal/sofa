@@ -25,6 +25,7 @@
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 using namespace sofa::component::topology;
 using namespace sofa::helper::testing;

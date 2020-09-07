@@ -23,7 +23,7 @@
 #include <SceneCreator/SceneCreator.h>
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/DataEngine_test.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 

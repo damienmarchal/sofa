@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopology.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/Shader.h>
 #include <iostream>

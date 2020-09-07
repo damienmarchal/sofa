@@ -27,6 +27,8 @@
 #include <SofaBaseTopology/HexahedronSetTopologyAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
+
 #include <algorithm>
 #include <functional>
 

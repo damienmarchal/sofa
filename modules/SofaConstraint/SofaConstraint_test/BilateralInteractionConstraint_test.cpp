@@ -26,6 +26,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/testing/NumericTest.h>
 using sofa::helper::testing::NumericTest;

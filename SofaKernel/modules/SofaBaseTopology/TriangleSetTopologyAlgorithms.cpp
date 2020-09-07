@@ -21,6 +21,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.inl>
+#include <sofa/core/topology/BaseTopologyEngine.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 

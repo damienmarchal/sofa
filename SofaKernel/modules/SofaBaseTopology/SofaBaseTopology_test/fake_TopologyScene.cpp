@@ -23,6 +23,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaLoader/MeshObjLoader.h>
 #include <sofa/helper/Utils.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include "fake_TopologyScene.h"
 
 using namespace sofa::simpleapi;

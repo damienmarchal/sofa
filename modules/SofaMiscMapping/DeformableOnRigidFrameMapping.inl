@@ -24,6 +24,7 @@
 
 #include <SofaMiscMapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa

@@ -28,6 +28,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <SofaBaseTopology/PointSetTopologyAlgorithms.h>
+#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 

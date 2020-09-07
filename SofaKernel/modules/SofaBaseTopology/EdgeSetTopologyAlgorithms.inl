@@ -27,6 +27,8 @@
 #include <SofaBaseTopology/EdgeSetTopologyAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
+#include <sofa/core/topology/TopologyChange.h>
 
 #include <algorithm>
 #include <functional>

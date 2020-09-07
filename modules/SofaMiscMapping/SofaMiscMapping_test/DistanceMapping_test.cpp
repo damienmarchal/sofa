@@ -22,7 +22,7 @@
 
 #include <SofaTest/Mapping_test.h>
 #include <SofaMiscMapping/DistanceMapping.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 
 namespace sofa {
 namespace {

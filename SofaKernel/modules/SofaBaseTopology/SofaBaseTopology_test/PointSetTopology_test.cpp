@@ -23,7 +23,7 @@
 #include <gtest/gtest.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaSimulationTree/GNode.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 using namespace sofa::component::topology;
 
 

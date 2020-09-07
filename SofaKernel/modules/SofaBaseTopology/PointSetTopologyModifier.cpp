@@ -26,6 +26,8 @@
 #include <sofa/simulation/TopologyChangeVisitor.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <sofa/core/topology/BaseTopologyEngine.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 

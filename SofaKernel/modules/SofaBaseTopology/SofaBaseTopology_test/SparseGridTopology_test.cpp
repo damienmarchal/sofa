@@ -16,6 +16,8 @@ using sofa::component::loader::MeshObjLoader;
 using sofa::component::loader::MeshSTLLoader;
 #endif
 
+#include <sofa/core/topology/TopologyChange.h>
+
 using sofa::core::objectmodel::New ;
 using sofa::defaulttype::Vector3 ;
 using namespace sofa::component::topology;

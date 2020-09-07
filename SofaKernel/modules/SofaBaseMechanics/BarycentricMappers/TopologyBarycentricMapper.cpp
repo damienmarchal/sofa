@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_CPP
 #include "TopologyBarycentricMapper.inl"
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 namespace sofa
 {

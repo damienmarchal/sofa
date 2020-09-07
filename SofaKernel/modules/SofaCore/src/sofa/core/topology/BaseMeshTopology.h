@@ -23,7 +23,7 @@
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyEngine.h>
+///#include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
@@ -34,6 +34,8 @@ namespace core
 
 namespace topology
 {
+class TopologyEngine;
+class TopologyChange;
 
 class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
 {

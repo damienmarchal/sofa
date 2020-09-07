@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP
 
 #include "BarycentricMapperRegularGridTopology.inl"
+#include <sofa/core/topology/BaseTopologyEngine.h>
 
 namespace sofa
 {

@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <ctime>
 #include <SceneCreator/SceneCreator.h>
-
+#include <sofa/core/topology/TopologyChange.h>
 
 namespace sofa {
 
