@@ -23,7 +23,6 @@
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -446,7 +445,7 @@ public:
     /// @{
 private:
     /// Tracker for all component Data linked to internal variables
-    sofa::core::DataTracker m_internalDataTracker;
+    sofa::core::DataTracker* m_internalDataTracker;
 
 protected:
     /// Method called to add the Data to the DataTracker (listing the Data to track)

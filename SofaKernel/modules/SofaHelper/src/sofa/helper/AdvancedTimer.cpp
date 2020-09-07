@@ -26,7 +26,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
 #include "../../extlibs/json/json.h"
-
+#include <sofa/core/objectmodel/BaseNode.h>
 
 #include <cmath>
 #include <cstdlib>
@@ -330,7 +330,7 @@ void AdvancedTimer::end(IdTimer id)
     }
 }
 
-std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
+std::string AdvancedTimer::end(IdTimer id, BaseNode* node)
 {
     TimerData& data = timers[id];
     if(!data.id)
@@ -1442,7 +1442,7 @@ void AdvancedTimer::clearData(IdTimer id)
     data.clear();
 }
 
-std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
+std::string AdvancedTimer::getTimeAnalysis(IdTimer id, BaseNode* node)
 {
     // Get simulation context and find the actual simulation step
     double time = node->getContext()->getTime();

@@ -28,6 +28,7 @@
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
 
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -40,6 +41,7 @@ namespace objectmodel
 
 BaseObject::BaseObject()
     : Base()
+    , m_internalDataTracker(new DataTracker)
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
@@ -61,6 +63,9 @@ BaseObject::~BaseObject()
             slave->l_master.reset();
         }
     }
+
+    if(m_internalDataTracker)
+        delete m_internalDataTracker;
 }
 
 // This method insures that context is never nullptr (using BaseContext::getDefault() instead)
@@ -271,33 +276,33 @@ void BaseObject::reinit()
 
 void BaseObject::updateInternal()
 {
-    const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
+    const auto& mapTrackedData = m_internalDataTracker->getMapTrackedData();
     for( auto const& it : mapTrackedData )
     {
         it.first->updateIfDirty();
     }
 
-    if(m_internalDataTracker.hasChanged())
+    if(m_internalDataTracker->hasChanged())
     {
         doUpdateInternal();
-        m_internalDataTracker.clean();
+        m_internalDataTracker->clean();
     }
 }
 
 void BaseObject::trackInternalData(const objectmodel::BaseData& data)
 {
-    m_internalDataTracker.trackData(data);
+    m_internalDataTracker->trackData(data);
 }
 
 void BaseObject::cleanTracker()
 {
-    m_internalDataTracker.clean();
+    m_internalDataTracker->clean();
 }
 
 bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
 {
     bool dataFoundinTracker = false;
-    const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
+    const auto& mapTrackedData = m_internalDataTracker->getMapTrackedData();
     const std::string & dataName = data.getName();
 
     for( auto const& it : mapTrackedData )
@@ -314,7 +319,7 @@ bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
         return false;
     }
 
-    return m_internalDataTracker.hasChanged(data);
+    return m_internalDataTracker->hasChanged(data);
 }
 
 void BaseObject::doUpdateInternal()

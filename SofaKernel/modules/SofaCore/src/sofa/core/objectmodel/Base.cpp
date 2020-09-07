@@ -31,6 +31,7 @@ using sofa::helper::logging::Message ;
 #include <typeinfo>
 #include <cstring>
 #include <sstream>
+#include <sofa/core/DataTracker.h>
 
 #define ERROR_LOG_SIZE 100
 

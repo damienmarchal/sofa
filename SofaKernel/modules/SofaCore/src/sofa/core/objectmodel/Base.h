@@ -22,19 +22,22 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/DataTracker.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
-#include <list>
 #include <sofa/core/sptr.h>
+#include <sofa/core/objectmodel/ComponentState.h>
 
+#include <list>
 #include <deque>
 
-#include <sofa/core/objectmodel/ComponentState.h>
-#include <sofa/core/DataTracker.h>
+/// Forward declaration
+namespace sofa::core
+{
+    class DataTracker;
+    class DataTrackerCallback;
+}
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
@@ -528,7 +531,6 @@ protected:
 public:
     /// Name of the object.
     Data<std::string> name;
-
 
     Data<bool> f_printLog; ///< if true, emits extra messages at runtime.
 

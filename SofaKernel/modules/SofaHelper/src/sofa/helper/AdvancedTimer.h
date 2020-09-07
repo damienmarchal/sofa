@@ -22,12 +22,18 @@
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
 #include <sofa/helper/config.h>
-#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
-
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/vector.h>
+#include <map>
 #include <iostream>
 #include <string>
 #include <vector>
+
+/// Forward declaration
+namespace sofa::core::objectmodel {
+    class BaseNode;
+}
 
 
 namespace sofa
@@ -35,6 +41,8 @@ namespace sofa
 
 namespace helper
 {
+
+    using sofa::core::objectmodel::BaseNode;
 
 /**
   Advanced timer, meant to gather precise statistics for results in published papers.
@@ -327,10 +335,10 @@ public:
     /**
      * @brief getTimeAnalysis Return the result of the AdvancedTimer
      * @param id IdTimer, id of the timer
-     * @param node Node*, pointeur on a node to get the scene simulation context
+     * @param node BaseNode*, pointeur on a node to get the scene simulation context
      * @return The timer value in JSON
      */
-    static std::string getTimeAnalysis(IdTimer id, simulation::Node* node);
+    static std::string getTimeAnalysis(IdTimer id, BaseNode* node);
 
     /**
      * @brief getSteps Return the vector of IDStep of the AdvancedTimer given execution
@@ -370,10 +378,10 @@ public:
     /**
      * @brief end Ovveride fo the end method in which you can use JSON or old format
      * @param id IdTimer, the id of the used timer
-     * @param node Node*, node used to get the scene cotext
+     * @param node BaseNode*, node used to get the scene cotext
      * @return std::string, the output if JSON format is set
      */
-    static std::string end(IdTimer id, simulation::Node* node);
+    static std::string end(IdTimer id, BaseNode* node);
 
     static bool isActive();
 
