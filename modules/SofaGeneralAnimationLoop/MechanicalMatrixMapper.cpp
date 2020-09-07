@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP
+#include <Eigen/SparseCore>
 #include "MechanicalMatrixMapper.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
