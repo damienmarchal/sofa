@@ -27,11 +27,15 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
+#include <sofa/core/objectmodel/BaseData.h>
+using sofa::core::objectmodel::BaseData;
+
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject;
 
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Vec3Types;
+
 
 namespace customns
 {
@@ -124,5 +128,51 @@ TEST_F(Base_test , testGetClassName)
     EXPECT_EQ(b->getClassName(), "MyFakeClassName");
     EXPECT_EQ(b->getTypeName(), "CustomBaseObjectTStdRigidTypes<3,double>>");
     EXPECT_EQ(b->getTemplateName(), Rigid3Types::Name());
+}
+
+TEST_F(Base_test , testFindBaseFromPath)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    importPlugin("SofaComponentAll") ;
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>"
+             "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+             "   <Node name='child1'>                                                    \n"
+             "      <MechanicalObject name='dofs' position='1 2 3'/>                     \n"
+             "      <Node name='child2'>                                                 \n"
+             "          <MechanicalObject name='dofs' position='@/child1/dofs.position'/>\n"
+             "      </Node>                                                              \n"
+             "   </Node>                                                                 \n"
+             "</Node>                                                                    \n" ;
+
+    SceneInstance c("xml", scene.str()) ;
+    c.initScene() ;
+
+    Node* root = c.root.get() ;
+    ASSERT_NE(root, nullptr) ;
+
+    BaseData* data = root->findData("name");
+    ASSERT_NE(data, nullptr);
+
+    Base* child1dofs = root->findBaseFromPath("/child1/dofs");
+    ASSERT_NE(child1dofs, nullptr);
+
+    Base* child2 = root->findBaseFromPath("/child1/child2");
+    ASSERT_NE(child2, nullptr);
+
+    Base* child2dofs = root->findBaseFromPath("/child1/child2/dofs");
+    ASSERT_NE(child2dofs, nullptr);
+
+    BaseData* p1 = child1dofs->findData("position");
+    ASSERT_NE(p1, nullptr);
+
+    BaseData* p2 = child2dofs->findData("position");
+    ASSERT_NE(p2, nullptr);
+
+    ASSERT_FALSE(p1->hasParent());
+    ASSERT_TRUE(p2->hasParent());
+    ASSERT_EQ(p1, p2->getParent());
+
+    ASSERT_EQ(p1->getValueString(), p2->getValueString());
 }
 

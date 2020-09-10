@@ -819,8 +819,7 @@ public:
                     dest += x[ancestors[i]]*coefs[i];
             }
         }
-        // BUGFIX: remove link to the Data as it is now specific to this instance
-        this->m_topologyData->setParent(nullptr);
+        this->m_topologyData->unSetParent();
     }
 
     void applyDestroyFunction(unsigned int, Coord& )

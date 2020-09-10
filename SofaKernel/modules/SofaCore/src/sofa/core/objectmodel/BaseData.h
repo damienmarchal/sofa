@@ -24,8 +24,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/Link.h>
+#include <sofa/core/objectmodel/DataLink.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -65,18 +65,6 @@ public:
 
     /// Default value used for flags.
     enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK };
-
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<BaseData> MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const
-    { return GetClass(); }    
-    template<class T>
-    static void dynamicCast(T*& ptr, Base* /*b*/)
-    {
-        ptr = nullptr; // BaseData does not derive from Base
-    }/// @}
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class BaseInitData
@@ -223,8 +211,14 @@ public:
     void setRequired(bool b) { setFlag(FLAG_REQUIRED,b); }
     /// @}
 
-    /// If we use the Data as a link and not as value directly
-    virtual std::string getLinkPath() const { return parentBaseData.getPath(); }
+    std::string getPath() const ;
+
+    /// If we use the Data as a link and not as a value directly
+    virtual std::string getLinkPath()
+    {
+        return getParent()->getPath();
+    }
+
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
@@ -279,54 +273,32 @@ public:
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
-    bool setParent(BaseData* parent, const std::string& path = std::string());
+    //bool setParent(BaseData* parent, const std::string& path);
     bool setParent(const std::string& path);
+    bool setParent(BaseData* parent){ return doSetParent(parent); }
+    BaseData* getParent() { return doGetParent(); }
+
+    bool hasParent() { return getParent() != nullptr; }
+    void unSetParent() { doUnSetParent(); }
+
 
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(BaseData* parent);
 
-    BaseData* getParent() const { return parentBaseData.get(); }
-
     /// Update the value of this %Data
     void update() override;
 
-    /// @name Links management
-    /// @{
-
-    typedef std::vector<BaseLink*> VecLink;
-    /// Accessor to the vector containing all the fields of this object
-    const VecLink& getLinks() const { return m_vecLink; }
-
-    virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
-
-    template<class DataT>
-    bool findDataLinkDest(DataT*& ptr, const std::string& path, const BaseLink* link)
-    {
-        BaseData* base = nullptr;
-        if (!findDataLinkDest(base, path, link)) return false;
-        ptr = dynamic_cast<DataT*>(base);
-        return (ptr != nullptr);
-    }
-
-    /// Add a link.
-    void addLink(BaseLink* l);
-
 protected:
 
-    BaseLink::InitLink<BaseData>
-    initLink(const std::string& name, const std::string& help)
-    {
-        return BaseLink::InitLink<BaseData>(this, name, help);
-    }
-
-    /// List of links
-    VecLink m_vecLink;
-
     /// @}
-
-    virtual void doSetParent(BaseData* parent);
-
+    ///
     void doDelInput(DDGNode* n) override;
+
+    /// The real implementation element is left to the in-herited class.
+    virtual BaseData* doGetParent() = 0;
+    virtual void doUnSetParent() = 0;
+    virtual bool doSetParent(const std::string& path) = 0;
+    virtual bool doSetParent(BaseData* path) = 0;
 
     /// Update this %Data from the value of its parent
     virtual bool updateFromParentValue(const BaseData* parent);
@@ -350,12 +322,8 @@ protected:
     /// Data name within the Base component
     std::string m_name;
 
-    /// Parent Data
-    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentBaseData;
-
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
-
 public:
 
     /// Helper method to get the type name of type T
@@ -363,20 +331,10 @@ public:
     static std::string typeName(const T* = nullptr)
     {
         if (defaulttype::DataTypeInfo<T>::ValidInfo)
-            return defaulttype::DataTypeName<T>::name();
+            return sofa::defaulttype::DataTypeName<T>::name();
         else
             return decodeTypeName(typeid(T));
     }
-};
-
-template<class Type>
-class LinkTraitsPtrCasts
-{
-public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return nullptr; }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container

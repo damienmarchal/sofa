@@ -180,7 +180,7 @@ void Base::addData(BaseData* f, const std::string& name)
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
         msg_warning() << "Data field name " << name
-                << " already used in this class or in a parent class !";
+                      << " already used in this class or in a parent class !";
     }
     m_vecData.push_back(f);
     m_aliasData.insert(std::make_pair(name, f));
@@ -201,7 +201,7 @@ void Base::addLink(BaseLink* l)
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
         msg_warning() << "Link name '" << name
-                << "' already used in this class or in a parent class !";
+                      << "' already used in this class or in a parent class !";
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));
@@ -282,7 +282,7 @@ void Base::addMessage(const Message &m) const
 
 void Base::clearLoggedMessages() const
 {
-   m_messageslog.clear() ;
+    m_messageslog.clear() ;
 }
 
 
@@ -392,6 +392,7 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
     return result;
 }
 
+
 bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
 {
     std::string pathStr, dataStr;
@@ -450,24 +451,24 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         {
             if (!dataVec[d]->setParent(value))
             {
-                BaseData* data = nullptr;
-                BaseLink* bl = nullptr;
-                dataVec[d]->findDataLinkDest(data, value, bl);
-                if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
-                {
-                    Base* owner = data->getOwner();
-                    DDGNode* o = dynamic_cast<DDGNode*>(owner);
-                    o->delOutput(data);
-                    owner->removeData(data);
-                    BaseData* newBD = dataVec[d]->getNewInstance();
-                    newBD->setName(data->getName());
-                    owner->addData(newBD);
-                    newBD->setGroup("Outputs");
-                    o->addOutput(newBD);
-                    dataVec[d]->setParent(newBD);
-                    ok = true;
-                    continue;
-                }
+                msg_error() << "Deprecated code path.... ";
+                //                BasveData* data = nullptr;
+                //                BaseLink* bl = nullptr;
+                //                dataVec[d]->findDataLinkDest(data, value, bl);
+                //                if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
+                //                {
+                //                    Base* owner = data->getOwner();
+                //                    DDGNode* o = dynamic_cast<DDGNode*>(owner);
+                //                    o->delOutput(data);
+                //                    owner->removeData(data);
+                //                    BaseData* newBD = dataVec[d]->getNewInstance();
+                //                    newBD->setName(data->getName());
+                //                    owner->addData(newBD);
+                //                    newBD->setGroup("Outputs");
+                //                    o->addOutput(newBD);
+                //                    dataVec[d]->setParent(newBD);
+                //                    ok = true;
+                //}
                 msg_warning()<<"Could not setup Data link between "<< value << " and " << attribute << "." ;
                 ok = false;
                 continue;
@@ -501,9 +502,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             std::stringstream tmp;
             tmp << "  " << linkVec[l]->getLinkedPath(i) << " = ";
             Base* b = linkVec[l]->getLinkedBase(i);
-            BaseData* d = linkVec[l]->getLinkedData(i);
             if (b) tmp << b->getTypeName() << " " << b->getName();
-            if (d) tmp << " . " << d->getValueTypeString() << " " << d->getName();
             msg_info() << tmp.str();
         }
     }

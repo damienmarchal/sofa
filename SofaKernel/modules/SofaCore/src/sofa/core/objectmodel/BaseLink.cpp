@@ -206,22 +206,9 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
     }
 }
 
-std::string BaseLink::CreateStringData(BaseData* data)
-{
-    if (!data) return std::string();
-    return data->getName();
-}
 std::string BaseLink::CreateString(Base* object, Base* from)
 {
     return CreateString(CreateStringPath(object,from));
-}
-std::string BaseLink::CreateString(BaseData* data, Base* from)
-{
-    return CreateString(CreateStringPath(data->getOwner(),from),CreateStringData(data));
-}
-std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
-{
-    return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
 
 void BaseLink::setLinkedBase(Base* link)

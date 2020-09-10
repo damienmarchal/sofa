@@ -44,7 +44,6 @@ BaseData::BaseData(const std::string& h, DataFlags dataflags)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(dataflags)
     , m_owner(nullptr), m_name("")
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counter = 0;
     m_isSet = false;
@@ -59,7 +58,6 @@ BaseData::BaseData( const char* helpMsg, bool isDisplayed, bool isReadOnly) : Ba
 BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
     : help(h), ownerClass(""), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counter = 0;
     m_isSet = false;
@@ -72,7 +70,6 @@ BaseData::BaseData( const BaseInitData& init)
     : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
     , m_counter(), m_isSet(), m_dataFlags(init.dataFlags)
     , m_owner(init.owner), m_name(init.name)
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
 {
     m_counter = 0;
     m_isSet = false;
@@ -80,10 +77,10 @@ BaseData::BaseData( const BaseInitData& init)
     if (init.data && init.data != this)
     {
         {
-        helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("BaseData");
-        msgerror << "initData POINTER MISMATCH: field name \"" << init.name << "\"";
-        if (init.owner)
-            msgerror << " created by class " << init.owner->getClassName();
+            helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("BaseData");
+            msgerror << "initData POINTER MISMATCH: field name \"" << init.name << "\"";
+            if (init.owner)
+                msgerror << " created by class " << init.owner->getClassName();
         }
         sofa::helper::BackTrace::dump();
         exit( EXIT_FAILURE );
@@ -108,62 +105,76 @@ bool BaseData::validParent(BaseData* parent)
     return false;
 }
 
-bool BaseData::setParent(BaseData* parent, const std::string& path)
-{
-    // First remove previous parents
-    while (!this->inputs.empty())
-        this->delInput(*this->inputs.begin());
-    if (parent && !validParent(parent))
-    {
-        if (m_owner)
-        {
-            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();
-            
-            msg_error_when(!this->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: destination Data " << getName() << " has an unknown type";
-            msg_error_when(!parent->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: source Data " << parent->getName() << " has an unknown type";
-        }
-        return false;
-    }
-    doSetParent(parent);
-    if (!path.empty())
-        parentBaseData.set(parent, path);
-    if (parent)
-    {
-        addInput(parent);
-        BaseData::setDirtyValue();
-        if (!isCounterValid())
-            update();
+//bool BaseData::setParent(BaseData* parent, const std::string& path)
+//{
+//    // First remove previous parents
+//    while (!this->inputs.empty())
+//        this->delInput(*this->inputs.begin());
 
-        m_counter++;
-        m_isSet = true;
-    }
-    return true;
-}
+//    if (parent && !validParent(parent))
+//    {
+//        if (m_owner)
+//        {
+//            msg_error(m_owner) << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName();
+
+//            msg_error_when(!this->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: destination Data " << getName() << " has an unknown type";
+//            msg_error_when(!parent->getValueTypeInfo()->ValidInfo(), m_owner) << "Possible reason: source Data " << parent->getName() << " has an unknown type";
+//        }
+//        return false;
+//    }
+//    doSetParent(parent);
+//    if (parent)
+//    {
+//        addInput(parent);
+//        BaseData::setDirtyValue();
+//        if (!isCounterValid())
+//            update();
+
+//        m_counter++;
+//        m_isSet = true;
+//    }
+//    else if (!path.empty())
+//    {
+//        doSetParent(path);
+//    }
+//    return true;
+//}
 
 bool BaseData::setParent(const std::string& path)
 {
-    BaseData* parent = nullptr;
-    if (this->findDataLinkDest(parent, path, &parentBaseData))
-        return setParent(parent, path);
-    else // simply set the path
+    /// Can we resolve the path right now ?
+    if(!m_owner)
     {
-        if (parentBaseData.get())
-            this->delInput(parentBaseData.get());
-        parentBaseData.set(parent, path);
-        return false;
+        /// We cannot resolve the path because there is no context.
+        /// Save the path in the link so we will try to resolve it later.
+        doSetParent(path);
+        return true;
     }
+
+    /// We have owner. Search for a match to the provided path.
+    BaseData* data = m_owner->findBaseDataFromPath(path);
+    if(data == nullptr)
+    {
+        /// If there is no match set the link with the path so we can resolve it later.
+        doSetParent(path);
+        return true;
+    }
+
+    /// The path query returned a data field. We can thus set it as a parent.
+    return doSetParent(data);
 }
 
-void BaseData::doSetParent(BaseData* parent)
-{
-    parentBaseData.set(parent);
-}
 
 void BaseData::doDelInput(DDGNode* n)
 {
-    if (parentBaseData == n)
-        doSetParent(nullptr);
     DDGNode::doDelInput(n);
+}
+
+std::string BaseData::getPath() const
+{
+    if(!m_owner)
+        return "."+m_name;
+    return m_owner->getPathName()+"."+m_name;
 }
 
 void BaseData::update()
@@ -176,13 +187,10 @@ void BaseData::update()
             (*it)->update();
         }
     }
-    if (parentBaseData)
+
+    if (hasParent())
     {
-#ifdef SOFA_DDG_TRACE
-        if (m_owner)
-            m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
-#endif
-        updateFromParentValue(parentBaseData);
+        updateFromParentValue(doGetParent());
         // If the value is dirty clean it
         if(this->isDirty())
         {
@@ -275,10 +283,10 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
 
     std::string m = msgs.str();
     if (m_owner
-#ifdef NDEBUG
-        && (!m.empty() || m_owner->notMuted())
-#endif
-    )
+        #ifdef NDEBUG
+            && (!m.empty() || m_owner->notMuted())
+        #endif
+            )
     {
         m_owner->sout << "Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << " : ";
         if (!m.empty()) m_owner->sout << m;
@@ -299,23 +307,6 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
-bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
-{
-    if (m_owner)
-        return m_owner->findDataLinkDest(ptr, path, link);
-    else
-    {
-        msg_error("BaseData") << "findDataLinkDest: no owner defined for Data " << getName() << ", cannot lookup Data link " << path;
-        return false;
-    }
-}
-
-/// Add a link.
-/// Note that this method should only be called if the link was not initialized with the initLink method
-void BaseData::addLink(BaseLink* l)
-{
-    m_vecLink.push_back(l);
-}
 
 std::string BaseData::decodeTypeName(const std::type_info& t)
 {

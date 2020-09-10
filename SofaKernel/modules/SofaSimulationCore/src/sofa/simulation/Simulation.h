@@ -33,6 +33,9 @@ namespace sofa
 namespace simulation
 {
 
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseData;
+
 /** Main controller of the scene.
     Defines how the scene is inited at the beginning, and updated at each time step.
     Derives from Base in order to use smart pointers and model the parameters as Datas, which makes their edition easy in the GUI.
@@ -45,12 +48,15 @@ public:
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
     Simulation();
     ~Simulation() override;
-	
+
 private:
 	Simulation(const Simulation& n) ;
 	Simulation& operator=(const Simulation& n) ;
 	
 public:
+    Base* doFindBaseFromPath(const std::string& path) const override { nullptr; }
+    BaseData* doFindBaseDataFromPath(const std::string& path) const override { nullptr; }
+
     /// Print all object in the graph
     virtual void print(Node* root);
 

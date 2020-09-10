@@ -24,6 +24,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MultiMapping.inl
     ${SRC_ROOT}/MultiVecId.h
     ${SRC_ROOT}/ObjectFactory.h
+    ${SRC_ROOT}/PathResolver.h
     ${SRC_ROOT}/SofaLibrary.h
     ${SRC_ROOT}/sptr.h
     ${SRC_ROOT}/State.h
@@ -103,6 +104,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseData.h
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
+    ${SRC_ROOT}/objectmodel/BaseEntity.h
     ${SRC_ROOT}/objectmodel/BaseObject.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
@@ -113,6 +115,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/DDGNode.h
     ${SRC_ROOT}/objectmodel/Data.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
+    ${SRC_ROOT}/objectmodel/DataLink.h
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.h
     ${SRC_ROOT}/objectmodel/Event.h
     ${SRC_ROOT}/objectmodel/GUIEvent.h
@@ -164,6 +167,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
+    ${SRC_ROOT}/PathResolver.cpp
     # ${SRC_ROOT}/Plugin.cpp
     # ${SRC_ROOT}/PluginManager.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
@@ -221,6 +225,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/Data.cpp
     ${SRC_ROOT}/objectmodel/DataCallback.cpp
     ${SRC_ROOT}/objectmodel/DataFileName.cpp
+    ${SRC_ROOT}/objectmodel/DataLink.cpp
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.cpp
     ${SRC_ROOT}/objectmodel/Event.cpp
     ${SRC_ROOT}/objectmodel/GUIEvent.cpp

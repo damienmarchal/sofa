@@ -84,6 +84,8 @@ class VisualParams;
 
 namespace simulation
 {
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseData;
 
 /**
    Implements the object (component) management of the core::Context.
@@ -329,6 +331,9 @@ public:
 
     void* findLinkDestClass(const sofa::core::objectmodel::BaseClass* destType, const std::string& path, const sofa::core::objectmodel::BaseLink* link) override;
 
+    /// Real implementation of the public method Base* Base::findBaseFromPath().
+    Base* doFindBaseFromPath(const std::string& path) const override;
+    BaseData* doFindBaseDataFromPath(const std::string& path) const override;
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///

@@ -23,6 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseEntity.h>
 
 namespace sofa
 {
@@ -435,7 +436,22 @@ public:
     void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=nullptr);
 
     void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
+    Base* doFindBaseFromPath(const std::string& path) const override
+    {
+        BaseContext* context=l_context.get();
+        if(context)
+            return context->findBaseFromPath(path);
+        return nullptr;
+    }
 
+
+    BaseData* doFindBaseDataFromPath(const std::string& path) const override
+    {
+        BaseContext* context=l_context.get();
+        if(context)
+            return context->findBaseDataFromPath(path);
+        return nullptr;
+    }
 
     /// Return the full path name of this object
     virtual std::string getPathName() const override;

@@ -415,6 +415,9 @@ public:
 
     /// @}
 
+    Base* doFindBaseFromPath(const std::string& path) const override { SOFA_UNUSED(path); return nullptr; }
+    BaseData* doFindBaseDataFromPath(const std::string& path) const override { SOFA_UNUSED(path);  return nullptr; }
+
     friend std::ostream SOFA_CORE_API & operator << (std::ostream& out, const BaseContext& c );
 };
 

@@ -91,7 +91,6 @@ public:
     void setHelp(const std::string& val) { m_help = val; }
 
     virtual Base* getOwnerBase() const = 0;
-    virtual BaseData* getOwnerData() const = 0;
 
     /// Set one of the flags.
     void setFlag(LinkFlagsEnum flag, bool b)
@@ -133,7 +132,6 @@ public:
 
     virtual size_t getSize() const = 0;
     virtual Base* getLinkedBase(unsigned int index=0) const = 0;
-    virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
     virtual std::string getLinkedPath(unsigned int index=0) const = 0;
 
     /// @name Serialization API
@@ -169,10 +167,7 @@ public:
 
     static std::string CreateString(const std::string& path, const std::string& data="");
     static std::string CreateStringPath(Base* object, Base* from);
-    static std::string CreateStringData(BaseData* data);
     static std::string CreateString(Base* object, Base* from);
-    static std::string CreateString(BaseData* data, Base* from);
-    static std::string CreateString(Base* object, BaseData* data, Base* from);
 
     /// @}
 

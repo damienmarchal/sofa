@@ -23,11 +23,13 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/sptr.h>
 #include <sofa/core/objectmodel/ComponentState.h>
+#include <sofa/core/objectmodel/Link.h>
 
 #include <list>
 #include <deque>
@@ -415,6 +417,10 @@ public:
 
     inline bool notMuted() const { return f_printLog.getValue(); }
 
+    /// Only needed to implement instanciate the DefaultContext
+    Base* findBaseFromPath(const std::string& path) const {return doFindBaseFromPath(path);}
+    BaseData* findBaseDataFromPath(const std::string& path){return doFindBaseDataFromPath(path);}
+
 protected:
     /// Helper method used by initData()
     void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
@@ -428,7 +434,8 @@ protected:
         res.value = value;
     }
 
-
+    virtual Base* doFindBaseFromPath(const std::string& path) const = 0 ;
+    virtual BaseData* doFindBaseDataFromPath(const std::string& path) const = 0 ;
 
 public:
 

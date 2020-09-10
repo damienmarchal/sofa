@@ -358,6 +358,29 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& name) const
     return nullptr;
 }
 
+sofa::core::objectmodel::Base* Node::doFindBaseFromPath(const std::string& path) const
+{
+    Base* b {nullptr};
+
+    /// OMG !!!
+    /// I appologize I just wanted to reusing the existing findLinkDest function.
+    std::string pathquery = "@"+path; /// Makes a path query out of the path.
+    const_cast<Node*>(this)->findLinkDest(b, pathquery, nullptr);
+    return b;
+}
+
+sofa::core::objectmodel::BaseData* Node::doFindBaseDataFromPath(const std::string& path) const
+{
+    BaseData* b {nullptr};
+
+    /// OMG !!!
+    /// I appologize I just wanted to reusing the existing findLinkDest function.
+    std::string pathquery = "@"+path; /// Makes a path query out of the path.
+    const_cast<Node*>(this)->findDataLinkDest(b, pathquery, nullptr);
+    return b;
+}
+
+
 void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
 {
     std::string pathStr;

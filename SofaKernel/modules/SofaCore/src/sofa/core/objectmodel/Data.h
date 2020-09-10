@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/core/PathResolver.h>
 namespace sofa
 {
 
@@ -42,36 +43,24 @@ class TData : public BaseData
 public:
     typedef T value_type;
 
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<TData<T>,BaseData> MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    const BaseClass* getClass() const { return GetClass(); }
-    static std::string templateName(const TData<T>* = nullptr)
-    {
-        T* ptr = nullptr;
-        return BaseData::typeName(ptr);
-    }
-    /// @}
-
     explicit TData(const BaseInitData& init)
-        : BaseData(init), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
+        : BaseData(init)
     {
     }
 
-    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped. 
+    //TODO(dmarchal:08/10/2019)Uncomment the deprecated when VS2015 support will be dropped.
     //[[deprecated("Replaced with one with std::string instead of char* version")]]
     TData( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
-        TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
-
-    TData( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
-        : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
+        TData( sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
     {
     }
 
+    TData( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
+        : BaseData(helpMsg, isDisplayed, isReadOnly)
+    {
+    }
 
-    ~TData() override
-    {}
+    ~TData() override {}
 
     inline void printValue(std::ostream& out) const override;
     inline std::string getValueString() const override;
@@ -118,17 +107,9 @@ public:
 
     bool copyValue(const BaseData* parent) override;
 
-    bool validParent(BaseData* parent) override;
-
 protected:
 
-    BaseLink::InitLink<TData<T> > initLink(const char* name, const char* help);
 
-    void doSetParent(BaseData* parent) override;
-
-    bool updateFromParentValue(const BaseData* parent) override;
-
-    SingleLink<TData<T>,TData<T>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
 };
 
 
@@ -294,20 +275,9 @@ public:
     using TData<T>::setDirtyOutputs;
     using TData<T>::updateIfDirty;
     using TData<T>::notifyEndEdit;
+    using TData<T>::setParent;
+    using TData<T>::getOwner;
 
-    /// @name Class reflection system
-    /// @{
-    typedef TClass<Data<T>, TData<T> > MyClass;
-    static const sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }
-    virtual const BaseClass* getClass() const
-    { return GetClass(); }
-
-    static std::string templateName(const Data<T>* = nullptr)
-    {
-        T* ptr = nullptr;
-        return BaseData::typeName(ptr);
-    }
-    /// @}
 
     /// @name Construction / destruction
     /// @{
@@ -329,12 +299,14 @@ public:
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
+        , parentData {*this}
     {
     }
 
     /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit Data(const InitData& init)
         : TData<T>(init)
+        , parentData {*this}
     {
         m_value = ValueType(init.value);
     }
@@ -347,6 +319,7 @@ public:
     /** \copydoc BaseData(const std::string& , bool, bool) */
     Data( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
+        , parentData {*this}
     {
         m_value = ValueType();
     }
@@ -363,6 +336,7 @@ public:
      */
     Data( const T& value, const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
+        , parentData {*this}
     {
         m_value = ValueType(value);
     }
@@ -442,6 +416,64 @@ public:
         return getValue();
     }
 
+    BaseData* doGetParent() override
+    {
+        /// If the link is set we return it.
+        if(parentData.isSet())
+        {
+            return parentData.getTarget();
+        }
+
+        /// If the link is not set but has a path, try to resolve it
+        if(parentData.hasPath() && getOwner())
+        {
+            BaseData* data = sofa::core::PathResolver::FindBaseDataFromPath(getOwner(), parentData.getPath());
+            this->setParent(data);
+        }
+
+        return parentData.getTarget();
+    }
+
+    void doUnSetParent() override
+    {
+        if(parentData.isSet())
+            this->doDelInput(parentData.getTarget());
+
+        parentData.unSet();
+    }
+
+    bool doSetParent(const std::string& path) override
+    {
+        /// If there is a parent set. We disconnect the DDGNode link between
+        /// the parent and the current data.
+        doUnSetParent();
+
+        parentData.setPath(path);
+        return true;
+    }
+
+    bool doSetParent(BaseData* parent) override
+    {
+        if(parent == nullptr)
+            return false;
+
+        Data<T>* downCastedParent = dynamic_cast<Data<T>*>(parent);
+        return setParent(downCastedParent);
+    }
+
+    bool setParent(Data<T>* parent)
+    {
+        if(parent == nullptr)
+            return false;
+
+        parentData.setTarget(parent);
+        this->doAddInput(parent);
+        m_value = parent->m_value;
+        m_counter++;
+        m_isSet = true;
+        BaseData::setDirtyOutputs();
+        return true;
+    }
 
     /// @}
 
@@ -488,6 +520,11 @@ public:
     {
         this->setValue(value);
     }
+
+
+
+    bool updateFromParentValue(const BaseData* parent) override;
+    DataLink<TData<T>> parentData;
 
 protected:
 
@@ -577,32 +614,11 @@ bool TData<T>::copyValue(const BaseData* parent)
 }
 
 template <class T>
-bool TData<T>::validParent(BaseData* parent)
+bool Data<T>::updateFromParentValue(const BaseData* parent)
 {
-    if (dynamic_cast<TData<T>*>(parent))
-        return true;
-    return BaseData::validParent(parent);
-}
-
-template <class T>
-BaseLink::InitLink<TData<T> > TData<T>::initLink(const char* name, const char* help)
-{
-    return BaseLink::InitLink<TData<T> >(this, name, help);
-}
-
-template <class T>
-void TData<T>::doSetParent(BaseData* parent)
-{
-    parentData.set(dynamic_cast<TData<T>*>(parent));
-    BaseData::doSetParent(parent);
-}
-
-template <class T>
-bool TData<T>::updateFromParentValue(const BaseData* parent)
-{
-    if (parent == parentData.get())
+    if (parent == parentData.getTarget())
     {
-        virtualSetLink(*parentData.get());
+        virtualSetLink(*parentData.getTarget());
         return true;
     }
     else
@@ -610,14 +626,12 @@ bool TData<T>::updateFromParentValue(const BaseData* parent)
 }
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
-
 extern template class SOFA_CORE_API TData< std::string >;
 extern template class SOFA_CORE_API Data< std::string >;
 extern template class SOFA_CORE_API TData< sofa::helper::vector<std::string> >;
 extern template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
 extern template class SOFA_CORE_API TData< bool >;
 extern template class SOFA_CORE_API Data< bool >;
-
 #endif
 
 } // namespace objectmodel
