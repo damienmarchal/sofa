@@ -15,6 +15,7 @@ set(SOURCE_FILES
     objectmodel/DDGNode_test.cpp
     DataEngine_test.cpp
     TrackedData_test.cpp
+    PathResolver_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

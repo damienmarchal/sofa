@@ -22,6 +22,7 @@
 #pragma once
 
 #include <string>
+#include <sofa/core/config.h>
 
 namespace sofa::core::objectmodel
 {
@@ -41,15 +42,20 @@ using objectmodel::BaseLink;
 using objectmodel::BaseClass;
 using objectmodel::AbstractDataLink;
 
-class PathResolver
+///////////////////////////////////////////////////////////////////////////////////////
+/// @brief This class expose an API to query a context to find Base* or a BaseData*.
+///////////////////////////////////////////////////////////////////////////////////////
+class SOFA_CORE_API PathResolver
 {
 public:
-    static sofa::core::objectmodel::Base* FindBaseFromPath(sofa::core::objectmodel::Base* base, const std::string& path);
-    static sofa::core::objectmodel::BaseData* FindBaseDataFromPath(sofa::core::objectmodel::Base* base, const std::string& path);
-
+    static Base* FindBaseFromPath(const Base* base, const std::string& path);
+    static BaseData* FindBaseDataFromPath(Base* base, const std::string& path);
+    static BaseData* FindBaseDataFromPath(const BaseData* context, const std::string& path);
     static bool PathHasValidSyntax(const std::string& path);
-    static bool ResolveDataLinkFromPath(AbstractDataLink& link);
 
+    /////// ALL THE FOLLOWING IS DUPLICATING THE SOFA API.....
+    /// The general idea is to move here all code related to path resolution so we can see if there is
+    /// duplicated code
     static bool FindDataLinkDest(Base* base, BaseData*& ptr, const std::string& path, const BaseLink* link);
 
     template<class T>

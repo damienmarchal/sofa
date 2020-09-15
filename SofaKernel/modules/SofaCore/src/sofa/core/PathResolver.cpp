@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <regex>
 #include "PathResolver.h"
 #include <sofa/core/objectmodel/DataLink.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -35,37 +36,48 @@ using sofa::core::objectmodel::AbstractDataLink;
 
 bool PathResolver::PathHasValidSyntax(const std::string &path)
 {
-    return true;
+    std::regex forbiddenSymbols {"[^\\./[:alnum:]]"};
+    return !std::regex_search(path, forbiddenSymbols);
 }
 
-Base* PathResolver::FindBaseFromPath(Base* context, const std::string& path)
+Base* PathResolver::FindBaseFromPath(const Base* context, const std::string& path)
 {
+    if(context==nullptr)
+        return nullptr;
     return context->findBaseFromPath(path);
+}
+
+BaseData* PathResolver::FindBaseDataFromPath(const BaseData* datacontext, const std::string& path)
+{
+    if(datacontext==nullptr)
+        return nullptr;
+
+    Base* context = datacontext->getOwner();
+    if(context==nullptr)
+        return nullptr;
+
+    return context->findBaseDataFromPath(path);
 }
 
 BaseData* PathResolver::FindBaseDataFromPath(Base* context, const std::string& path)
 {
+    if(context==nullptr)
+        return nullptr;
     return context->findBaseDataFromPath(path);
 }
 
 bool PathResolver::FindDataLinkDest(Base* context, BaseData*& ptr, const std::string& path, const BaseLink* link)
 {
+    if(context==nullptr)
+        return false;
     return context->findDataLinkDest(ptr, path, link);
 }
 
 void* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
+    if(context==nullptr)
+        return nullptr;
     return context->findLinkDestClass(destType, path, link);
-}
-
-bool PathResolver::ResolveDataLinkFromPath(AbstractDataLink& link)
-{
-    Base* context = link.getOwner().getOwner();
-    BaseData *data = context->findBaseDataFromPath(link.getPath());
-    if(data == nullptr)
-        return false;
-    link.setTarget(data);
-    return true;
 }
 
 

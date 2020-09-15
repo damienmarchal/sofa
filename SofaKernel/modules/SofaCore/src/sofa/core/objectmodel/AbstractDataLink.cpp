@@ -20,8 +20,43 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/DataLink.h>
+#include <sofa/core/PathResolver.h>
+using sofa::core::PathResolver;
 
 namespace sofa::core::objectmodel
 {
+
+/// Get the DataField having thins link as an attribute
+/// there is a one to one owner relationship.
+const BaseData& AbstractDataLink::getOwner() { return __doGetOwner__(); }
+
+/// Change the targetted DataField
+void AbstractDataLink::setTarget(BaseData* target){ __doSetTarget__(target); }
+
+/// Get the targetted DataField
+BaseData* AbstractDataLink::getTarget(){ return __doGetTarget__(); }
+
+const std::string AbstractDataLink::getPath() const
+{
+    return m_path;
 }
 
+void AbstractDataLink::setPath(const std::string& path)
+{
+    /// Trying to resolve link
+    m_path = path;
+    resolvePathAndSetData();
+}
+
+bool AbstractDataLink::resolvePathAndSetData()
+{
+    BaseData *data = PathResolver::FindBaseDataFromPath(&getOwner(), getPath());
+    if(data == nullptr)
+        return false;
+    setTarget(data);
+    return true;
+}
+
+bool AbstractDataLink::hasPath() const { return !m_path.empty(); }
+
+}

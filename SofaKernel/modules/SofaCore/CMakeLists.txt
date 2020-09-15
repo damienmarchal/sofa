@@ -97,6 +97,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/loader/PrimitiveGroup.h
     ${SRC_ROOT}/loader/SceneLoader.h
     ${SRC_ROOT}/loader/VoxelLoader.h
+    ${SRC_ROOT}/objectmodel/AbstractDataLink.h
     ${SRC_ROOT}/objectmodel/AspectPool.h
     ${SRC_ROOT}/objectmodel/Base.h
     ${SRC_ROOT}/objectmodel/BaseClass.h
@@ -207,6 +208,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/loader/MeshLoader.cpp
     ${SRC_ROOT}/loader/SceneLoader.cpp
     ${SRC_ROOT}/loader/VoxelLoader.cpp
+    ${SRC_ROOT}/objectmodel/AbstractDataLink.cpp
     ${SRC_ROOT}/objectmodel/AspectPool.cpp
     ${SRC_ROOT}/objectmodel/Base.cpp
     ${SRC_ROOT}/objectmodel/BaseClass.cpp

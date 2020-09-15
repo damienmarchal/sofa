@@ -19,9 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/DataLink.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
-namespace sofa::core::objectmodel
+#include <sofa/core/PathResolver.h>
+using sofa::core::PathResolver;
+
+class PathResolver_test: public BaseTest{};
+
+TEST_F(PathResolver_test, checkSyntaxValidPath)
 {
+    ASSERT_TRUE(PathResolver::PathHasValidSyntax("/root/node1/object.position"));
+    ASSERT_TRUE(PathResolver::PathHasValidSyntax("/root/node1/object"));
+    ASSERT_TRUE(PathResolver::PathHasValidSyntax("/"));
+    ASSERT_TRUE(PathResolver::PathHasValidSyntax(""));
 }
 
+TEST_F(PathResolver_test, checkSyntaxInvalidPath)
+{
+    ASSERT_FALSE(PathResolver::PathHasValidSyntax("@/a/path/is/not/and/address"));
+    ASSERT_FALSE(PathResolver::PathHasValidSyntax("/a/t\\dq/p"));
+    ASSERT_FALSE(PathResolver::PathHasValidSyntax("/a/t\\no space/p"));
+}

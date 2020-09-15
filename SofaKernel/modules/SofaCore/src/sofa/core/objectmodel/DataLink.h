@@ -21,56 +21,17 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/config.h>
 #include <string>
-
-#include <sofa/core/PathResolver.h>
+#include <sofa/core/config.h>
+#include <sofa/core/objectmodel/AbstractDataLink.h>
 
 namespace sofa::core::objectmodel
 {
 
-class BaseData;
-
-/// @brief AbstractDataLink is the base class for every link between two data fields
-/// The targetted BaseData is called the "target",
-/// The base object owning the current "child" object is the "owner"
-class AbstractDataLink
-{
-public:
-    /// Get the DataField having thins link as an attribute
-    /// there is a one to one owner relationship.
-    const BaseData& getOwner() { return __doGetOwner__(); }
-
-    /// Change the targetted DataField
-    void setTarget(BaseData* target){ __doSetTarget__(target); }
-
-    /// Get the targetted DataField
-    BaseData* getTarget(){ return __doGetTarget__(); }
-
-    const std::string getPath() const
-    {
-        return m_path;
-    }
-
-    void setPath(const std::string& path)
-    {
-        /// Trying to resolve link
-        m_path = path;
-        PathResolver::ResolveDataLinkFromPath(*this);
-    }
-
-    bool hasPath() const { return !m_path.empty(); }
-
-protected:
-    virtual void __doSetTarget__(BaseData* target) = 0;
-    virtual BaseData* __doGetTarget__() = 0;
-    virtual const BaseData& __doGetOwner__() = 0;
-
-    std::string m_path {""};
-};
-
 /**
- * Link between two BaseData.
+ * @brief DataLink stores a connection between two object of type Data<XXX>
+ * The class is templated by the Data type to connect.
+ * The class implements the AbstractDataLink interface.
  */
 template<class T>
 class SOFA_CORE_API DataLink final : public AbstractDataLink
@@ -78,18 +39,17 @@ class SOFA_CORE_API DataLink final : public AbstractDataLink
 public:
 
     DataLink(T& owner) : m_owner{owner} { }
-    virtual ~DataLink(){}
+    virtual ~DataLink() {}
 
     T* getTarget()
     {
         if(m_target==nullptr && !m_path.empty())
-            PathResolver::ResolveDataLinkFromPath(*this);
+            resolvePathAndSetData();
         return m_target;
     }
 
     void unSet(){ m_target=nullptr; m_path = ""; }
     bool isSet() const { return m_target != nullptr; }
-
     void setTarget(T* target)
     {
         m_path = "";
@@ -99,21 +59,25 @@ public:
     T& getOwner() const { return m_owner; }
 
 protected:
+    /// Take the "generic" data and cast it to the expected type.
     void __doSetTarget__(BaseData* target) override
     {
         setTarget(dynamic_cast<T*>(target));
     }
 
+    /// Returns the typed data to its abstract one
     BaseData* __doGetTarget__() override
     {
-        return getTarget();
+        return DataLink::getTarget();
     }
 
-    const BaseData& __doGetOwner__()
+    /// Returns the typed data to its abstract one.
+    const BaseData& __doGetOwner__() override
     {
-        return getOwner();
+        return DataLink::getOwner();
     }
 
+private:
     T& m_owner  ;
     T* m_target {nullptr};
 };
