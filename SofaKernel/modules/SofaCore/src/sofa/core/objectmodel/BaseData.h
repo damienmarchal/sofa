@@ -275,11 +275,11 @@ public:
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
     //bool setParent(BaseData* parent, const std::string& path);
     bool setParent(const std::string& path);
-    bool setParent(BaseData* parent){ return doSetParent(parent); }
-    BaseData* getParent() { return doGetParent(); }
+    bool setParent(BaseData* parent){ return __doSetParent__(parent); }
+    BaseData* getParent() { return __doGetParent__(); }
 
-    bool hasParent() { return getParent() != nullptr; }
-    void unSetParent() { doUnSetParent(); }
+    bool hasParent() { return __doGetParent__() != nullptr; }
+    void unSetParent() { __doUnSetParent__(); }
 
 
     /// Check if a given Data can be linked as a parent of this data
@@ -295,10 +295,10 @@ protected:
     void doDelInput(DDGNode* n) override;
 
     /// The real implementation element is left to the in-herited class.
-    virtual BaseData* doGetParent() = 0;
-    virtual void doUnSetParent() = 0;
-    virtual bool doSetParent(const std::string& path) = 0;
-    virtual bool doSetParent(BaseData* path) = 0;
+    virtual BaseData* __doGetParent__() = 0;
+    virtual void __doUnSetParent__() = 0;
+    virtual bool __doSetParent__(const std::string& path) = 0;
+    virtual bool __doSetParent__(BaseData* path) = 0;
 
     /// Update this %Data from the value of its parent
     virtual bool updateFromParentValue(const BaseData* parent);

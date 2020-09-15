@@ -107,6 +107,12 @@ public:
 
     bool copyValue(const BaseData* parent) override;
 
+
+    static std::string templateName(const TData<T>* = nullptr)
+    {
+        T* ptr = nullptr;
+        return BaseData::typeName(ptr);
+    }
 protected:
 
 
@@ -277,6 +283,8 @@ public:
     using TData<T>::notifyEndEdit;
     using TData<T>::setParent;
     using TData<T>::getOwner;
+    using TData<T>::addInput;
+    using TData<T>::delInput;
 
 
     /// @name Construction / destruction
@@ -364,6 +372,9 @@ public:
         m_counter++;
         m_isSet=true;
         BaseData::setDirtyOutputs();
+        if(parentData.isSet())
+            __doUnSetParent__();
+
         return m_value.beginEdit();
     }
 
@@ -416,7 +427,7 @@ public:
         return getValue();
     }
 
-    BaseData* doGetParent() override
+    BaseData* __doGetParent__() override
     {
         /// If the link is set we return it.
         if(parentData.isSet())
@@ -434,25 +445,25 @@ public:
         return parentData.getTarget();
     }
 
-    void doUnSetParent() override
+    void __doUnSetParent__() override
     {
         if(parentData.isSet())
-            this->doDelInput(parentData.getTarget());
+            delInput(parentData.getTarget());
 
         parentData.unSet();
     }
 
-    bool doSetParent(const std::string& path) override
+    bool __doSetParent__(const std::string& path) override
     {
         /// If there is a parent set. We disconnect the DDGNode link between
         /// the parent and the current data.
-        doUnSetParent();
+        __doUnSetParent__();
 
         parentData.setPath(path);
         return true;
     }
 
-    bool doSetParent(BaseData* parent) override
+    bool __doSetParent__(BaseData* parent) override
     {
         if(parent == nullptr)
             return false;
@@ -467,7 +478,7 @@ public:
             return false;
 
         parentData.setTarget(parent);
-        this->doAddInput(parent);
+        addInput(parent);
         m_value = parent->m_value;
         m_counter++;
         m_isSet = true;
@@ -621,8 +632,7 @@ bool Data<T>::updateFromParentValue(const BaseData* parent)
         virtualSetLink(*parentData.getTarget());
         return true;
     }
-    else
-        return BaseData::updateFromParentValue(parent);
+    return BaseData::updateFromParentValue(parent);
 }
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)

@@ -689,7 +689,8 @@ public:
         bool ok = true;
         while (istr >> path)
         {
-            ok &= TLink<TOwnerType,TDestType,TFlags|BaseLink::FLAG_MULTILINK>::CheckPath(path, context);
+            BaseData* data;
+            ok &= PathResolver::FindDataLinkDest(context, data, path, nullptr);
         }
         return ok;
     }

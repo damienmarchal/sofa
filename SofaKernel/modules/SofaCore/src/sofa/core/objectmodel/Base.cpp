@@ -449,9 +449,10 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         // test if data is a link and can be linked
         if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
-            if (!dataVec[d]->setParent(value))
+            string cleanedPath{value.begin()+1, value.end()};
+            if (!dataVec[d]->setParent(cleanedPath))
             {
-                msg_error() << "Deprecated code path.... ";
+                //msg_error() << "Deprecated code path.... ";
                 //                BasveData* data = nullptr;
                 //                BaseLink* bl = nullptr;
                 //                dataVec[d]->findDataLinkDest(data, value, bl);
@@ -461,13 +462,13 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
                 //                    DDGNode* o = dynamic_cast<DDGNode*>(owner);
                 //                    o->delOutput(data);
                 //                    owner->removeData(data);
-                //                    BaseData* newBD = dataVec[d]->getNewInstance();
+                //                    aseData* newBD = dataVec[d]->getNewInstance();
                 //                    newBD->setName(data->getName());
                 //                    owner->addData(newBD);
                 //                    newBD->setGroup("Outputs");
                 //                    o->addOutput(newBD);
                 //                    dataVec[d]->setParent(newBD);
-                //                    ok = true;
+                //                    ok = truBe;
                 //}
                 msg_warning()<<"Could not setup Data link between "<< value << " and " << attribute << "." ;
                 ok = false;

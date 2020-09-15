@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/helper/vector.h>
+#include <sofa/core/PathResolver.h>
 
 #include <fstream>
 
@@ -120,12 +121,12 @@ public:
     {
         std::string object1 = arg->getAttribute("object1","@./");
         std::string object2 = arg->getAttribute("object2","@./");
-        if (!LinkMState::CheckPath(object1, context)) {
+        if (!sofa::core::PathResolver::FindBaseFromPath(context, object1)) {
             arg->logError("Data attribute 'object1' must point to a valid object.");
             return false;
         }
 
-        if (!LinkMState::CheckPath(object2, context)) {
+        if (!sofa::core::PathResolver::FindBaseFromPath(context, object2)) {
             arg->logError("Data attribute 'object2' must point to a valid object.");
             return false;
         }

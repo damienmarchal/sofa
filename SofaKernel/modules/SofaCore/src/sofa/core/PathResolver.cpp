@@ -22,6 +22,7 @@
 #pragma once
 
 #include "PathResolver.h"
+#include <sofa/core/objectmodel/DataLink.h>
 #include <sofa/core/objectmodel/Base.h>
 
 namespace sofa::core
@@ -30,6 +31,12 @@ namespace sofa::core
 using sofa::core::objectmodel::Base;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::BaseClass;
+using sofa::core::objectmodel::AbstractDataLink;
+
+bool PathResolver::PathHasValidSyntax(const std::string &path)
+{
+    return true;
+}
 
 Base* PathResolver::FindBaseFromPath(Base* context, const std::string& path)
 {
@@ -50,5 +57,16 @@ void* PathResolver::FindLinkDestClass(Base* context, const BaseClass* destType, 
 {
     return context->findLinkDestClass(destType, path, link);
 }
+
+bool PathResolver::ResolveDataLinkFromPath(AbstractDataLink& link)
+{
+    Base* context = link.getOwner().getOwner();
+    BaseData *data = context->findBaseDataFromPath(link.getPath());
+    if(data == nullptr)
+        return false;
+    link.setTarget(data);
+    return true;
+}
+
 
 }

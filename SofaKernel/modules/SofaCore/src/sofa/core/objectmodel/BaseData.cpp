@@ -147,7 +147,7 @@ bool BaseData::setParent(const std::string& path)
     {
         /// We cannot resolve the path because there is no context.
         /// Save the path in the link so we will try to resolve it later.
-        doSetParent(path);
+        __doSetParent__(path);
         return true;
     }
 
@@ -156,12 +156,12 @@ bool BaseData::setParent(const std::string& path)
     if(data == nullptr)
     {
         /// If there is no match set the link with the path so we can resolve it later.
-        doSetParent(path);
+        __doSetParent__(path);
         return true;
     }
 
     /// The path query returned a data field. We can thus set it as a parent.
-    return doSetParent(data);
+    return __doSetParent__(data);
 }
 
 
@@ -190,7 +190,7 @@ void BaseData::update()
 
     if (hasParent())
     {
-        updateFromParentValue(doGetParent());
+        updateFromParentValue(__doGetParent__());
         // If the value is dirty clean it
         if(this->isDirty())
         {
@@ -202,13 +202,27 @@ void BaseData::update()
 /// Update this Data from the value of its parent
 bool BaseData::updateFromParentValue(const BaseData* parent)
 {
+    if (copyValue(parent))
+        return true;
+    return false;
+}
+
+/// Copy the value of another Data.
+/// Note that this is a one-time copy and not a permanent link (otherwise see setParent)
+/// @return true if copy was successfull
+bool BaseData::copyValue(const BaseData* parent)
+{
     const defaulttype::AbstractTypeInfo* dataInfo = this->getValueTypeInfo();
     const defaulttype::AbstractTypeInfo* parentInfo = parent->getValueTypeInfo();
 
     // Check if one of the data is a simple string
-    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
+    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name()
+            || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
     {
+        /// Convert value to string.
         std::string text = parent->getValueString();
+
+        /// Extract it
         return this->read(text);
     }
 
@@ -295,16 +309,6 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     }
 
     return true;
-}
-
-/// Copy the value of another Data.
-/// Note that this is a one-time copy and not a permanent link (otherwise see setParent)
-/// @return true if copy was successfull
-bool BaseData::copyValue(const BaseData* parent)
-{
-    if (updateFromParentValue(parent))
-        return true;
-    return false;
 }
 
 

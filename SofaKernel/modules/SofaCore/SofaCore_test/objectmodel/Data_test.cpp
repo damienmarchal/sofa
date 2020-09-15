@@ -93,6 +93,7 @@ struct vectorData_test: public ::testing::Test
         vDataInt.resize(5);
         vDataInt[3]->setParent(&data1);
         data1.setValue(1);
+        ASSERT_TRUE(vDataInt[3]->hasParent());
         ASSERT_EQ(vDataInt[3]->getValue(),1);
     }
 

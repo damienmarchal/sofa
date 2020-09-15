@@ -71,23 +71,23 @@ TEST_F(DataLink_test, Set)
 }
 
 /// This test check that the setting/unsetting mechanisme is working
-// TODO(dmarchal 08/09/2020): implement this breaking behavior when Data will be refactored.
-//TEST_F(DataLink_test, Unset)
-//{
-//    ASSERT_FALSE(data1.hasParent());
-//    ASSERT_FALSE(data2.hasParent());
-//    data2.setParent(&data1);
-//    data2.unSetParent();
-//    ASSERT_FALSE(data2.hasParent());
-//    ASSERT_EQ(data2.getParent(), nullptr);
-//}
+TEST_F(DataLink_test, Unset)
+{
+    ASSERT_FALSE(data1.hasParent());
+    ASSERT_FALSE(data2.hasParent());
+    data2.setParent(&data1);
+    data2.unSetParent();
+    ASSERT_FALSE(data2.hasParent());
+    ASSERT_EQ(data2.getParent(), nullptr);
+}
 
 TEST_F(DataLink_test, updateFromParent)
 {
     data2.setParent(&data1);
     data1.setValue(1);
-    ASSERT_FALSE(data1.isDirty());
+    ASSERT_FALSE(data1.isDirty());   ///< it is not dirty as the new value has been updated because of the set
+    ASSERT_EQ(data1.getValue(), 1);
     ASSERT_TRUE(data2.hasParent());
-    ASSERT_TRUE(data2.isDirty());
+    ASSERT_TRUE(data2.isDirty());    ///< it is dirty as the parent's value has changed but there we no getValue, so update was not done
     ASSERT_EQ(data1.getValue(), data2.getValue());
 }

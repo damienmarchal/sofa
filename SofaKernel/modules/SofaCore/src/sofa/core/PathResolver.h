@@ -28,6 +28,7 @@ namespace sofa::core::objectmodel
     class Base;
     class BaseData;
     class BaseLink;
+    class AbstractDataLink;
     class BaseClass;
 }
 
@@ -38,12 +39,16 @@ using objectmodel::Base;
 using objectmodel::BaseData;
 using objectmodel::BaseLink;
 using objectmodel::BaseClass;
+using objectmodel::AbstractDataLink;
 
 class PathResolver
 {
 public:
     static sofa::core::objectmodel::Base* FindBaseFromPath(sofa::core::objectmodel::Base* base, const std::string& path);
     static sofa::core::objectmodel::BaseData* FindBaseDataFromPath(sofa::core::objectmodel::Base* base, const std::string& path);
+
+    static bool PathHasValidSyntax(const std::string& path);
+    static bool ResolveDataLinkFromPath(AbstractDataLink& link);
 
     static bool FindDataLinkDest(Base* base, BaseData*& ptr, const std::string& path, const BaseLink* link);
 
